@@ -4,6 +4,7 @@ import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
+import { AnnouncementBar } from "@/components/AnnouncementBar";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -27,7 +28,10 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <SmoothScroll>
-          <Nav />
+          <div className="sticky top-0 z-50">
+            <AnnouncementBar />
+            <Nav />
+          </div>
           <main className="flex-1">{children}</main>
           <Footer />
         </SmoothScroll>

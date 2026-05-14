@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { sendWaitlistConfirmation } from "@/lib/email";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -31,10 +32,11 @@ export async function POST(request: Request) {
     );
   }
 
+  const normalizedEmail = email.toLowerCase().trim();
   const supabase = getSupabase();
   const { error } = await supabase
     .from("waitlist")
-    .insert({ email: email.toLowerCase().trim(), source });
+    .insert({ email: normalizedEmail, source });
 
   if (error) {
     if (error.code === "23505") {
@@ -45,6 +47,12 @@ export async function POST(request: Request) {
       { ok: false, error: "Could not save your email. Please try again." },
       { status: 500 },
     );
+  }
+
+  try {
+    await sendWaitlistConfirmation(normalizedEmail);
+  } catch (err) {
+    console.error("[waitlist] email send failed:", err);
   }
 
   return NextResponse.json({ ok: true }, { status: 200 });

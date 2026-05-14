@@ -5,13 +5,14 @@ import { ShineReveal } from "@/ui/ShineReveal";
 import { useInView } from "@/hooks/useInView";
 import { ease, duration } from "@/lib/motion";
 
-const HEADLINE = "Sleep advice is everywhere. What works for your body is not.";
+const HEADLINE =
+  "Sleep Advice is everywhere. What works for your body is not.";
 
 const P1 =
-  "Most sleep advice is written for an average person. But you aren't average. Your body, your stress, your routines, your genetics — none of it matches a population mean. So even good advice fails for reasons that have nothing to do with willpower.";
+  "Everyone is trying to help you interpret your data. Reddit, YouTube, wearable coaching tabs, and peers all offer a different “right answer.” But most advice does not account for your physiology, routine, goals, or how your body actually responds.";
 
 const P2 =
-  "Optimal sleep looks different for everyone. What helps one person fall asleep faster may do nothing for someone else. What matters is finding what works for your body, within the constraints of your daily life.";
+  "Optimal sleep looks different for everyone. The same protocol that helps one person fall asleep faster may do nothing for someone else. What matters is finding what works for your body, within the constraints of your daily life.";
 
 function fadeUp(delay: number): Variants {
   return {
@@ -34,15 +35,13 @@ const cardVariant: Variants = {
   },
 };
 
-// Bell-curve SVG path helper
 function bellPath(cx: number, amplitude: number, sigma: number, pts = 80): string {
-  const points = Array.from({ length: pts }, (_, i) => {
+  return Array.from({ length: pts }, (_, i) => {
     const x = (i / (pts - 1)) * 260;
     const t = (x - cx) / sigma;
     const y = 60 - amplitude * Math.exp(-0.5 * t * t);
     return `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`;
-  });
-  return points.join(" ");
+  }).join(" ");
 }
 
 const popPath = bellPath(100, 40, 28);
@@ -70,11 +69,7 @@ export function SleepAdviceSection() {
       }}
     >
       <div className="mx-auto max-w-[980px] px-6 text-center">
-        <ShineReveal
-          className="mx-auto"
-          duration={1.6}
-          delay={0.1}
-        >
+        <ShineReveal className="mx-auto" duration={1.8} delay={0.1}>
           <h2
             className="font-medium leading-[1.04] tracking-[-0.028em]"
             style={{
@@ -88,9 +83,7 @@ export function SleepAdviceSection() {
       </div>
 
       {/* Two-column block */}
-      <div
-        className="mx-auto mt-36 grid max-w-[1100px] grid-cols-1 gap-16 px-6 md:grid-cols-[52fr_44fr] md:gap-12"
-      >
+      <div className="mx-auto mt-36 grid max-w-[1100px] grid-cols-1 gap-16 px-6 md:grid-cols-[52fr_44fr] md:gap-12">
         {/* Left: paragraphs */}
         <div className="flex flex-col gap-8">
           <motion.p
@@ -124,15 +117,11 @@ export function SleepAdviceSection() {
               "0 1px 2px rgba(0,0,0,.04), 0 12px 32px rgba(0,0,0,.06), inset 0 0 0 0.5px rgba(0,0,0,.04)",
           }}
         >
-          <p
-            className="mb-5 text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--color-text-tertiary)]"
-          >
+          <p className="mb-5 text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--color-text-tertiary)]">
             Your sleep response, modeled
           </p>
 
-          {/* Bell curves */}
           <svg width="260" height="80" viewBox="0 0 260 80" overflow="visible">
-            {/* Population curve */}
             <motion.path
               d={popPath}
               fill="none"
@@ -143,7 +132,6 @@ export function SleepAdviceSection() {
               animate={p2InView ? { pathLength: 1 } : { pathLength: 0 }}
               transition={{ duration: 1.2, ease: ease.emphatic }}
             />
-            {/* You curve */}
             <motion.path
               d={youPath}
               fill="none"
@@ -156,13 +144,9 @@ export function SleepAdviceSection() {
             />
           </svg>
 
-          {/* Labels */}
           <div className="mt-3 flex items-center justify-between text-[11px]">
             <span style={{ color: "#B8B8B0" }}>Population average</span>
-            <span
-              className="font-medium"
-              style={{ color: "var(--color-accent)" }}
-            >
+            <span className="font-medium" style={{ color: "var(--color-accent)" }}>
               You
             </span>
           </div>

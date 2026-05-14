@@ -4,7 +4,7 @@ import { motion, Variants } from "framer-motion";
 import { CellNetwork } from "@/components/realPeople/CellNetwork";
 import { AnimatedStat } from "@/components/realPeople/AnimatedStat";
 import { useInView } from "@/hooks/useInView";
-import { ease, duration } from "@/lib/motion";
+import { ease } from "@/lib/motion";
 
 const HEADLINE_WORDS = ["Real", "people", "are", "not", "averages."];
 
@@ -22,27 +22,12 @@ const wordItem: Variants = {
   },
 };
 
-function fadeUp(d: number): Variants {
-  return {
-    hidden: { opacity: 0, y: 12 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: ease.smooth, delay: d },
-    },
-  };
-}
-
 export function RealPeopleSection() {
   const { ref: headRef, isInView: headInView } = useInView<HTMLHeadingElement>({
     threshold: 0.3,
     once: true,
   });
   const { ref: statsRef, isInView: statsInView } = useInView<HTMLDivElement>({
-    threshold: 0.3,
-    once: true,
-  });
-  const { ref: subRef, isInView: subInView } = useInView<HTMLDivElement>({
     threshold: 0.3,
     once: true,
   });
@@ -53,7 +38,7 @@ export function RealPeopleSection() {
       style={{ paddingTop: 180, paddingBottom: 160 }}
     >
       <div className="mx-auto max-w-[1180px] px-6">
-        {/* Headline — word-by-word */}
+        {/* Headline */}
         <motion.h2
           ref={headRef}
           variants={wordContainer}
@@ -98,39 +83,6 @@ export function RealPeopleSection() {
               <AnimatedStat value={1} caption="of you" hold delay={0} />
             </>
           )}
-        </div>
-
-        {/* Sub-copy */}
-        <div ref={subRef} className="mx-auto mt-24 max-w-[720px] text-center">
-          <motion.h3
-            variants={wordContainer}
-            initial="hidden"
-            animate={subInView ? "visible" : "hidden"}
-            className="mb-5 text-[24px] font-medium tracking-[-0.01em] text-[var(--color-text-primary)]"
-          >
-            {["Density.", "Interconnection.", "Uniqueness."].map((word, i) => (
-              <motion.span
-                key={i}
-                className="inline-block will-change-transform"
-                style={{ marginRight: "0.3em" }}
-                variants={wordItem}
-              >
-                {word}
-              </motion.span>
-            ))}
-          </motion.h3>
-          <motion.p
-            variants={fadeUp(0.3)}
-            initial="hidden"
-            animate={subInView ? "visible" : "hidden"}
-            className="text-[18px] leading-[1.62] text-[var(--color-text-secondary)]"
-          >
-            Your body is a system of systems&nbsp;— not a number, not an
-            average, not a generic protocol. Trune treats it that way. We model
-            your sleep against the version of you that is alive right now: your
-            physiology, your habits, your environment. Every recommendation
-            flows from that.
-          </motion.p>
         </div>
       </div>
     </section>
