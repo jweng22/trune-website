@@ -2,14 +2,11 @@
 
 import { ReactNode, useEffect } from "react";
 import Lenis from "lenis";
+import { lenisOptions } from "@/lib/lenis";
 
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-    });
+    const lenis = new Lenis(lenisOptions);
 
     let rafId: number;
     function raf(time: number) {

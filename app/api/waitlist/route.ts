@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
+  return createClient(url, key, { auth: { persistSession: false } });
+}
 
 export async function POST(request: Request) {
   let payload: unknown;
@@ -14,11 +20,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const email = (payload as { email?: unknown })?.email;
-  const source =
-    typeof (payload as { source?: unknown })?.source === "string"
-      ? ((payload as { source?: string }).source as string)
-      : "homepage";
+  const body = payload as { email?: unknown; source?: unknown };
+  const email = body?.email;
+  const source = typeof body?.source === "string" ? body.source : "homepage";
 
   if (typeof email !== "string" || !EMAIL_RE.test(email)) {
     return NextResponse.json(
@@ -27,20 +31,16 @@ export async function POST(request: Request) {
     );
   }
 
-  const supabase = await createClient();
+  const supabase = getSupabase();
   const { error } = await supabase
     .from("waitlist")
     .insert({ email: email.toLowerCase().trim(), source });
 
   if (error) {
     if (error.code === "23505") {
-      return NextResponse.json(
-        { ok: true, duplicate: true },
-        { status: 200 },
-      );
+      return NextResponse.json({ ok: true, duplicate: true }, { status: 200 });
     }
-
-    console.error("waitlist insert failed", error);
+    console.error("[waitlist] insert failed:", error.code, error.message);
     return NextResponse.json(
       { ok: false, error: "Could not save your email. Please try again." },
       { status: 500 },
